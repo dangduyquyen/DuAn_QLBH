@@ -1,0 +1,39 @@
+﻿@model SV20T1080048.DomainModels.Category
+@{
+    ViewData["Title"] = "Delete";
+}
+
+
+<div class="box box-danger">
+    <div class="box box-body">
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-warning">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
+        }
+        <form action="~/Admin/Category/Delete/@Model.CategoryID" method="post">
+            <div class="form-group">
+                <label>Tên loại hàng:</label>
+                <p class="form-control-static" style="border-bottom: 1px dotted #646464">@Model.CategoryName</p>
+            </div>
+
+            <div class="form-group">
+                <label>Thông tin chi tiết:</label>
+                <p class="form-control-static" style="border-bottom: 1px dotted #646464">@Model.Description</p>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="agree" name="agree">
+                <label for="agree">Đồng ý xóa</label>
+            </div>
+
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-remove"></i>
+                Xóa dữ liệu
+            </button>
+
+            <a href="~/Admin/Category" class="btn btn-default">Quay lại</a>
+        </form>
+    </div>
+</div>
+

@@ -1,0 +1,72 @@
+﻿@model SV20T1080048.Web.Models.PaginationSearchShipper
+@{
+    Layout = null;
+}
+<p style="margin: 10px 0 10px 0">
+    có <strong> @string.Format("{0, -10:N0}", Model.RowCount) </strong> người giao hàng. Hiện đang ở trang
+    <strong> @string.Format("{0,-10:N0}", Model.Page) </strong> trên tổng số <strong> @string.Format("{0,-10:N0}", Model.PageCount) </strong> trang.
+</p>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="bg-primary">
+                <th> Tên Người giao hàng</th>
+                <th> Số điện thoại </th>
+                <th></th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td> @item.ShipperName </td>
+                    <td> @item.Phone </td>
+                    <td class="text-right">
+                        <a href="~/Admin/Shipper/Edit?id=@item.ShipperId" class="btn btn-xs btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="~/Admin/Shipper/Delete?id=@item.ShipperId" class="btn btn-xs btn-danger">
+                            <i class="fa fa-remove"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="text-center">
+    <ul class="pagination">
+        @if (Model.Page > 1)
+        {
+            <li><a href="javascript:;" onclick="doSearch(1, '@Model.SearchValue')">&lt;&lt;</a></li>
+            <li><a href="javascript:;" onclick="doSearch(@(Model.Page - 1), '@Model.SearchValue')">&lt;</a></li>
+        }
+
+        @for (int i = 1; i <= Model.PageCount; i++)
+        {
+            if (i >= Model.Page - 4 && i <= Model.Page + 4)
+            {
+                if (i == Model.Page)
+                {
+                    <li class="active"><a href="javascript:;">@i</a></li>
+                }
+                else
+                {
+                    <li><a href="javascript:;" onclick="doSearch(@i, '@Model.SearchValue')">@i</a></li>
+                }
+            }
+            else if ((i == 1 && Model.Page > 8) || (i == Model.PageCount && Model.Page < Model.PageCount - 3))
+            {
+                // Hiển thị nút "..." ở đầu hoặc cuối danh sách
+                <li><a href="javascript:;">...</a></li>
+            }
+        }
+
+        @if (Model.Page < Model.PageCount)
+        {
+            <li><a href="javascript:;" onclick="doSearch(@(Model.Page + 1), '@Model.SearchValue')">></a></li>
+            <li><a href="javascript:;" onclick="doSearch(@Model.PageCount, '@Model.SearchValue')">>></a></li>
+        }
+    </ul>
+</div>

@@ -1,0 +1,91 @@
+﻿@model SV20T1080048.Web.Models.PaginationSearchCustomer
+@{
+    Layout = null;
+}
+<!--Hiển thị danh sách.-->
+<p style="margin: 10px 0 10px 0">
+    có <strong> @string.Format("{0,-10:N0}", Model.RowCount) </strong> khách hàng. Hiện đang ở trang
+    <strong> @string.Format("{0,-10:N0}", Model.Page) </strong> trên tổng số <strong> @string.Format("{0,-10:N0}", Model.PageCount) </strong> trang.
+</p>
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-warning">
+        <p>@ViewBag.ErrorMessage</p>
+    </div>
+}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="bg-primary">
+                <th>Tên khách hàng</th>
+                <th>Tên liên hệ</th>
+                <th>Tỉnh /Thành phố</th>
+                <th>Địa chỉ</th>
+                <th>Điện thoại</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td> @item.CustomerName</td>
+                    <td> @item.ContactName</td>
+                    <td> @item.Province</td>
+                    <td> @item.Address </td>
+                    <td> @item.Phone </td>
+                    <td> @item.Email</td>
+                    <td class="text-right">
+                        <a href="~/Admin/Customer/Edit/@item.CustomerID" class="btn btn-xs btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="~/Admin/Customer/ChangePassword?id=@item.CustomerID" class="btn btn-xs btn-warning">
+                            <i class="fa fa-key"></i>
+                        </a>
+                        <a href="~/Admin/Customer/Delete?id=@item.CustomerID" class="btn btn-xs btn-danger">
+                            <i class="fa fa-remove"></i>
+                        </a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="text-center">
+    <ul class="pagination">
+        @if (Model.Page > 1)
+        {
+            <li><a href="javascript:;" onclick="doSearch(1, '@Model.SearchValue')">&lt;&lt;</a></li>
+            <li><a href="javascript:;" onclick="doSearch(@(Model.Page - 1), '@Model.SearchValue')">&lt;</a></li>
+        }
+
+        @for (int i = 1; i <= Model.PageCount; i++)
+        {
+            if (i >= Model.Page - 4 && i <= Model.Page + 4)
+            {
+                if (i == Model.Page)
+                {
+                    <li class="active"><a href="javascript:;">@i</a></li>
+                }
+                else
+                {
+                    <li><a href="javascript:;" onclick="doSearch(@i, '@Model.SearchValue')">@i</a></li>
+                }
+            }
+            else if ((i == 1 && Model.Page > 8) || (i == Model.PageCount && Model.Page < Model.PageCount - 3))
+            {
+                // Hiển thị nút "..." ở đầu hoặc cuối danh sách
+                <li><a href="javascript:;">...</a></li>
+            }
+        }
+
+        @if (Model.Page < Model.PageCount)
+        {
+            <li><a href="javascript:;" onclick="doSearch(@(Model.Page + 1), '@Model.SearchValue')">></a></li>
+            <li><a href="javascript:;" onclick="doSearch(@Model.PageCount, '@Model.SearchValue')">>></a></li>
+        }
+    </ul>
+</div>
+

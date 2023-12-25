@@ -1,0 +1,11 @@
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\bin\Debug\net6.0\SV20T1080048.DomainModels.deps.json
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\bin\Debug\net6.0\SV20T1080048.DomainModels.dll
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\bin\Debug\net6.0\SV20T1080048.DomainModels.pdb
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\obj\Debug\net6.0\SV20T1080048.DomainModels.GeneratedMSBuildEditorConfig.editorconfig
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\obj\Debug\net6.0\SV20T1080048.DomainModels.AssemblyInfoInputs.cache
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\obj\Debug\net6.0\SV20T1080048.DomainModels.AssemblyInfo.cs
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\obj\Debug\net6.0\SV20T1080048.DomainModels.csproj.CoreCompileInputs.cache
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\obj\Debug\net6.0\SV20T1080048.DomainModels.dll
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\obj\Debug\net6.0\refint\SV20T1080048.DomainModels.dll
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\obj\Debug\net6.0\SV20T1080048.DomainModels.pdb
+D:\LapTrinhWeb_9_2023\SV20T1080048\SV20T1080048.DomainModels\obj\Debug\net6.0\ref\SV20T1080048.DomainModels.dll
