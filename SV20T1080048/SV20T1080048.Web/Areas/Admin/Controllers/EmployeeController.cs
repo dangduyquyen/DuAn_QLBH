@@ -84,20 +84,20 @@ namespace SV20T1080048.Web.Areas.Admin.Controllers
     }
         public IActionResult Edit(int id = 0)
         {
-            Employee model = new Employee()
+            ViewBag.Title = "Cập nhật Nhân viên:";
+            if (id == 0)
             {
-                EmployeeID = 123,
-                FullName = "Trần Nguyên Phong",
-                Address = "77 Nguyễn Huệ",
-                BirthDate = new DateTime(1976, 12, 20),
-                Email = "tnphong@gmail.com",
-                Phone = "0935254782",
-                IsWorking = true,
-                Photo = "photo.png"
-            };
+                return RedirectToAction("Index");
+            }
+            var data = CommonDataService.GetEmployee(id);
+            if (data == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View("Create", data);
 
-            ViewBag.Title = "Cập nhật nhân viên";
-            return View("Create", model);
+            
+           
         }
         public IActionResult Save(Employee model, string birthday, IFormFile? uploadPhoto)
         {
@@ -131,6 +131,7 @@ namespace SV20T1080048.Web.Areas.Admin.Controllers
                 return Content("Có lỗi xảy ra");
 
             //Lưu dữ liệu (lưu model vào database)
+            //return Json(model);
             if (model.EmployeeID == 0)
             {
                 CommonDataService.AddEmployee(model);
@@ -140,7 +141,7 @@ namespace SV20T1080048.Web.Areas.Admin.Controllers
                 CommonDataService.UpdateEmployee(model);
             }
             return RedirectToAction("Index");
-            
+
 
         }
         public IActionResult Delete(int id = 0)

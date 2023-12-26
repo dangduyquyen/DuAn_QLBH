@@ -145,21 +145,22 @@ namespace SV20T1080048.DataLayers.SQLServer
             bool result = false;
             using (var connection = OpenConnection())
             {
-                var sql = @"if not exists(select * from Employees where EmployeeId <> @employeeId and Email = @email)
-                                begin
-                                    update Employees 
-                                    set FullName = @fullName,
-                                        BirthDate = @birthDate,
-                                        Address = @address,
-                                        Phone = @phone,
-                                        Email = @email,
-                                        Photo = @photo,
-                                        IsWorking = @isWorking
-                                    where EmployeeId = @empployeeId
-                                end";
+                var sql = @"if not exists(select * from Employees where EmployeeID <> @employeeID and Email = @email)
+                        begin
+                            update Employees 
+                            set FullName = @fullName,
+                                BirthDate = @birthDate,
+                                Address = @address,
+                                Phone = @phone,
+                                Email = @email,
+                                Photo = @photo,
+                                IsWorking = @isWorking
+                            where EmployeeID = @employeeID
+                        end";
+
                 var parameters = new
                 {
-                    employeeId = data.EmployeeID,
+                    employeeID = data.EmployeeID,
                     fullName = data.FullName ?? "",
                     birthDate = data.BirthDate,
                     address = data.Address ?? "",
@@ -168,10 +169,14 @@ namespace SV20T1080048.DataLayers.SQLServer
                     photo = data.Photo ?? "",
                     isWorking = data.IsWorking
                 };
+
+                // Thực hiện truy vấn và cập nhật kết quả
+                result = connection.Execute(sql, parameters) > 0;
             }
 
-                return result;
+            return result;
         }
-       
+
+
     }
 }

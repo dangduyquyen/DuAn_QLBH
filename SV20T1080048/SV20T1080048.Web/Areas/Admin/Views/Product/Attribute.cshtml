@@ -8,7 +8,7 @@
     </div>
 
     <div class="box-body">
-        <form class="form-horizontal" action="~/Product/SaveAttribute" method="post">
+        <form class="form-horizontal" action="~/Admin/Product/SaveAttribute" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" name="AttributeID" value="@Model.AttributeID" />
             <input type="hidden" name="ProductID" value="@Model.ProductID" />

@@ -48,12 +48,55 @@ namespace SV20T1080048.DataLayers.SQLServer
 
         public long AddAttribute(ProductAttribute data)
         {
-            throw new NotImplementedException();
+            int id = 0;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"if exists(select * from ProductAttributes where AttributeID = @AttributeID)
+                                select -1
+                            else
+                                begin
+                                    insert into ProductAttributes (ProductID, AttributeName, AttributeValue,DisplayOrder)
+                                    values(@ProductID,@AttributeName,@AttributeValue,@DisplayOrder);
+                                end";
+                var parameters = new
+                {
+                    attributeID = data.AttributeID,
+                    productID = data.ProductID,
+                    attributeName = data.AttributeName ?? "",
+                    attributeValue = data.AttributeValue ?? "",
+                    displayOrder = data.DisplayOrder
+                };
+                id = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: CommandType.Text);
+                connection.Close();
+            }
+            return id;
         }
 
         public long AddPhoto(ProductPhoto data)
         {
-            throw new NotImplementedException();
+            int id = 0;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"if exists(select * from ProductPhotos where PhotoID = @PhotoID)
+                                select -1
+                            else
+                                begin
+                                    insert into ProductPhotos(ProductID, Photo, Description,DisplayOrder,IsHidden)
+                                    values(@ProductID,@Photo,@Description,@DisplayOrder, @IsHidden);
+                                end";
+                var parameters = new
+                {
+                    photoID = data.PhotoID,
+                    productID = data.ProductID,
+                    photo = data.Photo ?? "",
+                    description = data.Description ?? "",
+                    displayOrder = data.DisplayOrder,
+                    isHidden = data.IsHidden
+                };
+                id = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: CommandType.Text);
+                connection.Close();
+            }
+            return id;
         }
 
         public int Count(string searchValue = "", int categoryID = 0, int supplierID = 0, decimal minPrice = 0, decimal maxPrice = 0)
@@ -110,8 +153,8 @@ namespace SV20T1080048.DataLayers.SQLServer
             using (var connection = OpenConnection())
             {
                 var sql = @"
-                    DELETE FROM Product WHERE PhotoID = photoID";
-                var parameters = new { photoID = photoID };
+                    DELETE FROM ProductPhotos WHERE PhotoID = @photoId";
+                var parameters = new { photoId = photoID };
                 result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
                 connection.Close();
             }
@@ -244,17 +287,103 @@ namespace SV20T1080048.DataLayers.SQLServer
 
         public bool Update(Product data)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"if not exists(select * from Products where ProductID <> @productID and ProductName = @productName)
+                        begin
+                            update Products 
+                            set ProductName = @productName,
+                                ProductDescription = @productDescription,
+                                SupplierID = @supplierID,
+                                CategoryID = @categoryID,
+                                Unit = @unit,
+                                Price = @price,
+                                Photo = @photo,
+                                IsSelling = @isSelling
+                            where ProductID = @productID
+                        end";
+
+                var parameters = new
+                {
+                    productID = data.ProductID,
+                    productName = data.ProductName ?? "",
+                    productDescription = data.ProductDescription ?? "",
+                    supplierID = data.SupplierID,
+                    categoryID = data.CategoryID,
+                    unit = data.Unit ?? "",
+                    price = data.Price,
+                    photo = data.Photo ?? "",
+                    isSelling = data.IsSelling
+                };
+
+                // Thực hiện truy vấn và cập nhật kết quả
+                result = connection.Execute(sql, parameters) > 0;
+            }
+
+            return result;
         }
 
         public bool UpdateAttribute(ProductAttribute data)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"if not exists(select * from ProductAttributes where AttributeID <> @attributeID and AttributeName = @attributeName)
+                        begin
+                            update ProductAttributes
+                            set AttributeName = @attributeName,
+                                AttributeValue = @attributeValue,
+                                DisplayOrder = @displayOrder
+                            where AttributeID = @attributeID
+                        end";
+
+                var parameters = new
+                {
+                    attributeID = data.AttributeID,
+                    productID = data.ProductID,
+                    attributeName = data.AttributeName ?? "",
+                    attributeValue = data.AttributeValue ?? "",
+                    displayOrder = data.DisplayOrder
+                };
+
+                // Thực hiện truy vấn và cập nhật kết quả
+                result = connection.Execute(sql, parameters) > 0;
+            }
+
+            return result;
         }
 
         public bool UpdatePhoto(ProductPhoto data)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"if not exists(select * from ProductPhotos where PhotoID <> @photoID and Photo = @photo)
+                        begin
+                            update ProductPhotos
+                            set Photo = @photo,
+                                Description = @description,
+                                DisplayOrder = @displayOrder,
+                                IsHidden = @isHidden
+                            where PhotoID = @photoID
+                        end";
+
+                var parameters = new
+                {
+                    photoID = data.PhotoID,
+                    productID = data.ProductID,
+                    photo = data.Photo ?? "",
+                    description = data.Description ?? "",
+                    displayOrder = data.DisplayOrder,
+                    isHidden = data.IsHidden
+                };
+
+                // Thực hiện truy vấn và cập nhật kết quả
+                result = connection.Execute(sql, parameters) > 0;
+            }
+
+            return result;
         }
     }
 }

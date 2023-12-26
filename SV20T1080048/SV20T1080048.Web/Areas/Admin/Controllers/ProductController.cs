@@ -211,11 +211,47 @@ namespace LiteCommerce.Web.Areas.Admin.Controllers
                     return View(data);
                 case "delete":
                     ProductDataService.DeletePhoto(photoID);
-                    return RedirectToAction($"Edit/{productID}"); //return RedirectToAction("Edit", new { productID = productID });
+                    return RedirectToAction("Index"); //return RedirectToAction("Edit", new { productID = productID });
                 default:
                     return RedirectToAction("Index");
             }
         }
+
+        public IActionResult SavePhoto(ProductPhoto model, IFormFile? uploadPhoto)
+        {
+            //Xử lý với ảnh
+            //Upload ảnh lên (nếu có), sau khi upload xong thì mới lấy tên file ảnh vừa upload
+            //để gán cho trường Photo của Employee
+            if (uploadPhoto != null)
+            {
+                string fileName = $"{DateTime.Now.Ticks}_{uploadPhoto.FileName}";
+                string filePath = System.IO.Path.Combine(ApplicationContext.HostEnviroment.WebRootPath, @"images\products", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    uploadPhoto.CopyTo(stream);
+                }
+                model.Photo = fileName;
+            }
+
+            //Kiểm tra đầu vào của model
+
+            if (!ModelState.IsValid)
+                return Content("Có lỗi xảy ra");
+
+            //Lưu dữ liệu (lưu model vào database)
+            //return Json(model);
+            if (model.PhotoID == 0)
+            {
+                ProductDataService.AddPhoto(model);
+            }
+            else
+            {
+                ProductDataService.UpdatePhoto(model);
+            }
+            return RedirectToAction("Index");
+        }
+
+        //===================================================================Attribute
 
         [Route("~/Admin/Product/Attribute/{method?}/{productID}/{attributeID?}")]
         public ActionResult Attribute(string method = "add", int productID = 0, int attributeID = 0)
@@ -249,13 +285,66 @@ namespace LiteCommerce.Web.Areas.Admin.Controllers
                     return View(data);
                 case "delete":
                     ProductDataService.DeleteAttribute(attributeID);
-                    return RedirectToAction($"Edit/{productID}"); //return RedirectToAction("Edit", new { productID = productID });
+                    return RedirectToAction("Index"); //return RedirectToAction("Edit", new { productID = productID });
                 default:
                     return RedirectToAction("Index");
             }
         }
 
+        public IActionResult SaveAttribute (ProductAttribute data)
+        {
+            // kiểm tra dữ liệu đầu vào
+            if (string.IsNullOrWhiteSpace(data.AttributeName))
+            {
+                ModelState.AddModelError(nameof(data.AttributeName), "Tên thuộc tính không được để trống");
+            }
+            if (string.IsNullOrWhiteSpace(data.AttributeValue))
+            {
+                ModelState.AddModelError(nameof(data.AttributeValue), "Giá trị thuộc tính không được để trống");
+            }
 
+            if (string.IsNullOrWhiteSpace(data.DisplayOrder.ToString()))
+            {
+                ModelState.AddModelError("DisplayOrder", "Thứ tự hiển thị thuộc tính không được để trống");
+            }
+            else if (data.DisplayOrder < 1)
+            {
+                ModelState.AddModelError("DisplayOrder", "Thứ tự hiển thị thuộc tính phải > 0");
+            }
+            List<ProductAttribute> productAttributes = ProductDataService.ListAttributes(data.ProductID);
+            bool isUsedDisplayOrder = false;
+            foreach (ProductAttribute item in productAttributes)
+            {
+                if (item.DisplayOrder == data.DisplayOrder && data.AttributeID != item.AttributeID)
+                {
+                    isUsedDisplayOrder = true;
+                    break;
+                }
+            }
+            if (isUsedDisplayOrder)
+            {
+                ModelState.AddModelError("DisplayOrder",
+                        $"Thứ tự hiển thị {data.DisplayOrder} của thuộc tính đã được sử dụng trước đó");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Title = data.AttributeID == 0 ? "Bổ sung thuộc tính" : "Thay đổi thuộc tính";
+                return View("Attribute", data);
+            }
+
+            // thực hiện thêm hoặc cập nhật
+            if (data.AttributeID == 0)
+            {
+                ProductDataService.AddAttribute(data);
+            }
+            else
+            {
+                ProductDataService.UpdateAttribute(data);
+            }
+            return RedirectToAction("Index");
+        }
+        // end method
 
     }
 }

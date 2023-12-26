@@ -15,7 +15,7 @@
     </div>
 
     <div class="box-body">
-        <form class="form-horizontal" action="~/Product/Save" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal" method="post" enctype="multipart/form-data" action="~/Admin/Product/Save">
             @Html.AntiForgeryToken()
             <input type="hidden" name="ProductID" value="@Model.Product.ProductID" />
             @Html.ValidationSummary("", new { @style = "color:#f00" })
@@ -83,7 +83,8 @@
             <div class="form-group">
                 <label class="control-label col-sm-2">Ảnh minh họa:</label>
                 <div class="col-sm-10">
-                    <input type="file" class="form-control" name="productPhoto"
+                    <input hidden value="@Model.Product.Photo" />
+                    <input type="file" class="form-control" name="uploadPhoto" accept="image/*"
                            onchange="document.getElementById('Photo').src = window.URL.createObjectURL(this.files[0])" />
                 </div>
             </div>
@@ -140,7 +141,7 @@
                 {
                     <tr>
                         <td style="vertical-align:middle">
-                            <img src="@item.Photo" alt="@item.PhotoID" style="width:100px" />
+                            <img src="~/images/products/@item.Photo" alt="@item.PhotoID" style="width:100px" />
                         </td>
                         <td style="vertical-align:middle;">
                             @item.Description
